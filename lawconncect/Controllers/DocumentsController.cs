@@ -13,10 +13,13 @@ namespace lawconncect.Controllers
     public class DocumentsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        IWebHostEnvironment _host;
 
-        public DocumentsController(ApplicationDbContext context)
+
+        public DocumentsController(ApplicationDbContext context, IWebHostEnvironment host   )
         {
             _context = context;
+            _host = host;
         }
 
         // GET: Documents
@@ -54,13 +57,68 @@ namespace lawconncect.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,CaseDocument")] Documents documents)
+        public async Task<IActionResult> Create([Bind("Id,DocPath,Document")] Documents documents)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(documents);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (documents.Document != null)
+                {
+
+                    string ext = Path.GetExtension(documents.Document.FileName).ToLower();
+                    if (ext == ".jpg" || ext == ".jpeg" || ext == ".png")
+                    {
+
+                        try
+                        {
+                            string savePath = Path.Combine(_host.WebRootPath, "Pictures");
+                            if (!Directory.Exists(savePath))
+                            {
+                                Directory.CreateDirectory(savePath);
+                            }
+                            string filename=Guid.NewGuid().ToString();
+                            string filePath = Path.Combine(savePath, filename + ext);
+                            using (FileStream fs = new FileStream(filePath, FileMode.Create))
+                            {
+                                documents.Document.CopyTo(fs);
+                            }
+                            documents.DocPath = "~/Pictures/" + filename + ext;
+                            _context.Add(documents);
+                            if (await _context.SaveChangesAsync() > 0)
+                            {
+                                return RedirectToAction(nameof(Index));
+                            }
+                            else
+                            {
+                                ModelState.AddModelError("", "Save failed");
+                                //  return View(category);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            ModelState.AddModelError("", ex.Message);
+                            // return View(category);
+
+                        }
+
+
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Please enter .jpg |.png |.jpeg image");
+                        // return View(category);
+                    }
+
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Please enter valid image");
+                    // return View(category);
+                }
+
+
+                //_context.Add(documents);
+                //await _context.SaveChangesAsync();
+                //return RedirectToAction(nameof(Index));
             }
             return View(documents);
         }
@@ -86,7 +144,7 @@ namespace lawconncect.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CaseDocument")] Documents documents)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,DocPath")] Documents documents)
         {
             if (id != documents.Id)
             {

@@ -12,10 +12,17 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CaseDocument)
+            @Html.DisplayNameFor(model => model.DocPath)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CaseDocument)
+            @if (Model.DocPath != null)
+            {
+                <a href="@Url.Content(Model.DocPath)" target="_blank">View Document</a>
+            }
+            else
+            {
+				<p>No Document</p>
+            }
         </dd>
     </dl>
 </div>

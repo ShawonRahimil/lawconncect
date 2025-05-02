@@ -10,22 +10,23 @@ using lawconncect.Models;
 
 namespace lawconncect.Controllers
 {
-    public class CasesController : Controller
+    public class MastersController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public CasesController(ApplicationDbContext context)
+        public MastersController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Cases
+        // GET: Masters
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Cases.ToListAsync());
+            var applicationDbContext = _context.Masters.Include(m => m.Adalot).Include(m => m.Section);
+            return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Cases/Details/5
+        // GET: Masters/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,39 +34,45 @@ namespace lawconncect.Controllers
                 return NotFound();
             }
 
-            var @case = await _context.Cases
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (@case == null)
+            var master = await _context.Masters
+                .Include(m => m.Adalot)
+                .Include(m => m.Section)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (master == null)
             {
                 return NotFound();
             }
 
-            return View(@case);
+            return View(master);
         }
 
-        // GET: Cases/Create
+        // GET: Masters/Create
         public IActionResult Create()
         {
+            ViewData["AdalotId"] = new SelectList(_context.adalots, "Id", "Id");
+            ViewData["SectionId"] = new SelectList(_context.Sections, "Id", "Id");
             return View();
         }
 
-        // POST: Cases/Create
+        // POST: Masters/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,Description")] Case @case)
+        public async Task<IActionResult> Create([Bind("Id,CaseNumber,SectionId,AdalotId")] Master master)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(@case);
+                _context.Add(master);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(@case);
+            ViewData["AdalotId"] = new SelectList(_context.adalots, "Id", "Id", master.AdalotId);
+            ViewData["SectionId"] = new SelectList(_context.Sections, "Id", "Id", master.SectionId);
+            return View(master);
         }
 
-        // GET: Cases/Edit/5
+        // GET: Masters/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,22 +80,24 @@ namespace lawconncect.Controllers
                 return NotFound();
             }
 
-            var @case = await _context.Cases.FindAsync(id);
-            if (@case == null)
+            var master = await _context.Masters.FindAsync(id);
+            if (master == null)
             {
                 return NotFound();
             }
-            return View(@case);
+            ViewData["AdalotId"] = new SelectList(_context.adalots, "Id", "Id", master.AdalotId);
+            ViewData["SectionId"] = new SelectList(_context.Sections, "Id", "Id", master.SectionId);
+            return View(master);
         }
 
-        // POST: Cases/Edit/5
+        // POST: Masters/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Description")] Case @case)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,CaseNumber,SectionId,AdalotId")] Master master)
         {
-            if (id != @case.ID)
+            if (id != master.Id)
             {
                 return NotFound();
             }
@@ -97,12 +106,12 @@ namespace lawconncect.Controllers
             {
                 try
                 {
-                    _context.Update(@case);
+                    _context.Update(master);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CaseExists(@case.ID))
+                    if (!MasterExists(master.Id))
                     {
                         return NotFound();
                     }
@@ -113,10 +122,12 @@ namespace lawconncect.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(@case);
+            ViewData["AdalotId"] = new SelectList(_context.adalots, "Id", "Id", master.AdalotId);
+            ViewData["SectionId"] = new SelectList(_context.Sections, "Id", "Id", master.SectionId);
+            return View(master);
         }
 
-        // GET: Cases/Delete/5
+        // GET: Masters/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -124,34 +135,36 @@ namespace lawconncect.Controllers
                 return NotFound();
             }
 
-            var @case = await _context.Cases
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (@case == null)
+            var master = await _context.Masters
+                .Include(m => m.Adalot)
+                .Include(m => m.Section)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (master == null)
             {
                 return NotFound();
             }
 
-            return View(@case);
+            return View(master);
         }
 
-        // POST: Cases/Delete/5
+        // POST: Masters/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var @case = await _context.Cases.FindAsync(id);
-            if (@case != null)
+            var master = await _context.Masters.FindAsync(id);
+            if (master != null)
             {
-                _context.Cases.Remove(@case);
+                _context.Masters.Remove(master);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CaseExists(int id)
+        private bool MasterExists(int id)
         {
-            return _context.Cases.Any(e => e.ID == id);
+            return _context.Masters.Any(e => e.Id == id);
         }
     }
 }

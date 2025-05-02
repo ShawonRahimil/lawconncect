@@ -1,4 +1,4 @@
-﻿@model IEnumerable<lawconncect.Models.LawyerWithCase>
+﻿@model IEnumerable<lawconncect.Models.Master>
 
 @{
     ViewData["Title"] = "Index";
@@ -14,10 +14,13 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Case)
+                @Html.DisplayNameFor(model => model.CaseNumber)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Lawyer)
+                @Html.DisplayNameFor(model => model.Section)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Adalot)
             </th>
             <th></th>
         </tr>
@@ -26,10 +29,13 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Case.ID)
+                @Html.DisplayFor(modelItem => item.CaseNumber)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Lawyer.Id)
+                @Html.DisplayFor(modelItem => item.Section.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Adalot.Id)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

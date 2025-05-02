@@ -22,7 +22,7 @@ namespace lawconncect.Controllers
         // GET: LawyerWithCases
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.LawyerWithCase.Include(l => l.Case);
+            var applicationDbContext = _context.LawyerWithCases.Include(l => l.Case).Include(l => l.Lawyer);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -34,8 +34,9 @@ namespace lawconncect.Controllers
                 return NotFound();
             }
 
-            var lawyerWithCase = await _context.LawyerWithCase
+            var lawyerWithCase = await _context.LawyerWithCases
                 .Include(l => l.Case)
+                .Include(l => l.Lawyer)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (lawyerWithCase == null)
             {
@@ -48,7 +49,8 @@ namespace lawconncect.Controllers
         // GET: LawyerWithCases/Create
         public IActionResult Create()
         {
-            ViewData["CaseId"] = new SelectList(_context.Sases, "ID", "ID");
+            ViewData["CaseId"] = new SelectList(_context.Cases, "ID", "ID");
+            ViewData["lawyerId"] = new SelectList(_context.Lawyers, "Id", "Id");
             return View();
         }
 
@@ -65,7 +67,8 @@ namespace lawconncect.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CaseId"] = new SelectList(_context.Sases, "ID", "ID", lawyerWithCase.CaseId);
+            ViewData["CaseId"] = new SelectList(_context.Cases, "ID", "ID", lawyerWithCase.CaseId);
+            ViewData["lawyerId"] = new SelectList(_context.Lawyers, "Id", "Id", lawyerWithCase.lawyerId);
             return View(lawyerWithCase);
         }
 
@@ -77,12 +80,13 @@ namespace lawconncect.Controllers
                 return NotFound();
             }
 
-            var lawyerWithCase = await _context.LawyerWithCase.FindAsync(id);
+            var lawyerWithCase = await _context.LawyerWithCases.FindAsync(id);
             if (lawyerWithCase == null)
             {
                 return NotFound();
             }
-            ViewData["CaseId"] = new SelectList(_context.Sases, "ID", "ID", lawyerWithCase.CaseId);
+            ViewData["CaseId"] = new SelectList(_context.Cases, "ID", "ID", lawyerWithCase.CaseId);
+            ViewData["lawyerId"] = new SelectList(_context.Lawyers, "Id", "Id", lawyerWithCase.lawyerId);
             return View(lawyerWithCase);
         }
 
@@ -118,7 +122,8 @@ namespace lawconncect.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CaseId"] = new SelectList(_context.Sases, "ID", "ID", lawyerWithCase.CaseId);
+            ViewData["CaseId"] = new SelectList(_context.Cases, "ID", "ID", lawyerWithCase.CaseId);
+            ViewData["lawyerId"] = new SelectList(_context.Lawyers, "Id", "Id", lawyerWithCase.lawyerId);
             return View(lawyerWithCase);
         }
 
@@ -130,8 +135,9 @@ namespace lawconncect.Controllers
                 return NotFound();
             }
 
-            var lawyerWithCase = await _context.LawyerWithCase
+            var lawyerWithCase = await _context.LawyerWithCases
                 .Include(l => l.Case)
+                .Include(l => l.Lawyer)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (lawyerWithCase == null)
             {
@@ -146,10 +152,10 @@ namespace lawconncect.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var lawyerWithCase = await _context.LawyerWithCase.FindAsync(id);
+            var lawyerWithCase = await _context.LawyerWithCases.FindAsync(id);
             if (lawyerWithCase != null)
             {
-                _context.LawyerWithCase.Remove(lawyerWithCase);
+                _context.LawyerWithCases.Remove(lawyerWithCase);
             }
 
             await _context.SaveChangesAsync();
@@ -158,7 +164,7 @@ namespace lawconncect.Controllers
 
         private bool LawyerWithCaseExists(int id)
         {
-            return _context.LawyerWithCase.Any(e => e.Id == id);
+            return _context.LawyerWithCases.Any(e => e.Id == id);
         }
     }
 }

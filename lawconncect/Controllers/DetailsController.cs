@@ -51,7 +51,7 @@ namespace lawconncect.Controllers
         public IActionResult Create()
         {
             ViewData["DocumentsId"] = new SelectList(_context.documents, "Id", "Id");
-            ViewData["LawyerWithCaseId"] = new SelectList(_context.LawyerWithCase, "Id", "Id");
+            ViewData["LawyerWithCaseId"] = new SelectList(_context.LawyerWithCases, "Id", "Id");
             ViewData["MasterId"] = new SelectList(_context.Masters, "Id", "Id");
             return View();
         }
@@ -70,7 +70,7 @@ namespace lawconncect.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["DocumentsId"] = new SelectList(_context.documents, "Id", "Id", details.DocumentsId);
-            ViewData["LawyerWithCaseId"] = new SelectList(_context.LawyerWithCase, "Id", "Id", details.LawyerWithCaseId);
+            ViewData["LawyerWithCaseId"] = new SelectList(_context.LawyerWithCases, "Id", "Id", details.LawyerWithCaseId);
             ViewData["MasterId"] = new SelectList(_context.Masters, "Id", "Id", details.MasterId);
             return View(details);
         }
@@ -89,7 +89,7 @@ namespace lawconncect.Controllers
                 return NotFound();
             }
             ViewData["DocumentsId"] = new SelectList(_context.documents, "Id", "Id", details.DocumentsId);
-            ViewData["LawyerWithCaseId"] = new SelectList(_context.LawyerWithCase, "Id", "Id", details.LawyerWithCaseId);
+            ViewData["LawyerWithCaseId"] = new SelectList(_context.LawyerWithCases, "Id", "Id", details.LawyerWithCaseId);
             ViewData["MasterId"] = new SelectList(_context.Masters, "Id", "Id", details.MasterId);
             return View(details);
         }
@@ -127,7 +127,7 @@ namespace lawconncect.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["DocumentsId"] = new SelectList(_context.documents, "Id", "Id", details.DocumentsId);
-            ViewData["LawyerWithCaseId"] = new SelectList(_context.LawyerWithCase, "Id", "Id", details.LawyerWithCaseId);
+            ViewData["LawyerWithCaseId"] = new SelectList(_context.LawyerWithCases, "Id", "Id", details.LawyerWithCaseId);
             ViewData["MasterId"] = new SelectList(_context.Masters, "Id", "Id", details.MasterId);
             return View(details);
         }

@@ -13,10 +13,12 @@ namespace lawconncect.Controllers
     public class ClientsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        IWebHostEnvironment _host;
 
-        public ClientsController(ApplicationDbContext context)
+        public ClientsController(ApplicationDbContext context, IWebHostEnvironment host)
         {
             _context = context;
+            _host = host;
         }
 
         // GET: Clients
@@ -54,13 +56,68 @@ namespace lawconncect.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Email,ContactNo,Images,Description")] Client client)
+        public async Task<IActionResult> Create([Bind("Id,Name,Email,ContactNo,Image,ImagePath,Description")] Client client)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(client);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (client.Image != null)
+                {
+
+                    string ext = Path.GetExtension(client.Image.FileName).ToLower();
+                    if (ext == ".jpg" || ext == ".jpeg" || ext == ".png")
+                    {
+
+                        try
+                        {
+                            string savePath = Path.Combine(_host.WebRootPath, "Pictures");
+                            if (!Directory.Exists(savePath))
+                            {
+                                Directory.CreateDirectory(savePath);
+                            }
+                            string filePath = Path.Combine(savePath, client.Name + ext);
+                            using (FileStream fs = new FileStream(filePath, FileMode.Create))
+                            {
+                                client.Image.CopyTo(fs);
+                            }
+                            client.ImagePath = "~/Pictures/" + client.Name + ext;
+                            _context.Add(client);
+                            if (await _context.SaveChangesAsync() > 0)
+                            {
+                                return RedirectToAction(nameof(Index));
+                            }
+                            else
+                            {
+                                ModelState.AddModelError("", "Save failed");
+                                //  return View(category);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            ModelState.AddModelError("", ex.Message);
+                            // return View(category);
+
+                        }
+
+
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Please enter .jpg |.png |.jpeg Image");
+                        // return View(category);
+                    }
+
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Please enter valid image");
+                    // return View(category);
+                }
+
+
+
+                //_context.Add(client);
+                //await _context.SaveChangesAsync();
+                //return RedirectToAction(nameof(Index));
             }
             return View(client);
         }
@@ -86,7 +143,7 @@ namespace lawconncect.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Email,ContactNo,Images,Description")] Client client)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Email,ContactNo,ImagePath,Description")] Client client)
         {
             if (id != client.Id)
             {

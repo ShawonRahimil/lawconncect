@@ -13,9 +13,9 @@ namespace lawconncect.Controllers
     public class LawyersController : Controller
     {
         private readonly ApplicationDbContext _context;
-      IWebHostEnvironment _host;
+        IWebHostEnvironment _host;
 
-        public LawyersController(ApplicationDbContext context , IWebHostEnvironment host)
+        public LawyersController(ApplicationDbContext context, IWebHostEnvironment host )
         {
             _context = context;
             _host = host;
@@ -56,60 +56,59 @@ namespace lawconncect.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Email,ContactNo,Images,Description")] Lawyer lawyer)
+        public async Task<IActionResult> Create([Bind("Id,Name,Email,ContactNo,Image,Description")]Lawyer lawyer)
         {
             if (ModelState.IsValid)
             {
                 if (lawyer.Image != null)
                 {
-                    string ext = Path.GetExtension(lawyer.Image.FileName).ToLower();
-                    if (ext==".jpg"||ext==".png"||ext=="jpeg")
-                    {
-                        string savePath = Path.Combine(_host.WebRootPath, "Pictures");
-                        if (!Directory.Exists(savePath))
-                        {
-                            Directory.CreateDirectory(savePath);
-                        }
-                        string filePath = Path.Combine(savePath, lawyer.Name + ext);
-                        using (FileStream fs=new FileStream(filePath,FileMode.Create))
-                        {
-                            lawyer.Image.CopyTo(fs);
 
-                        }
-                        lawyer.Images = "~/Pictures/" + lawyer.Name + ext;
-                        _context.Add(lawyer);
-                        if(await _context.SaveChangesAsync() > 0)
+                    string ext = Path.GetExtension(lawyer.Image.FileName).ToLower();
+                    if (ext == ".jpg" || ext == ".jpeg" || ext == ".png")
+                    {
+
+                        try
                         {
-                            return RedirectToAction("Index");
+                            string savePath = Path.Combine(_host.WebRootPath, "Pictures");
+                            if (!Directory.Exists(savePath))
+                            {
+                                Directory.CreateDirectory(savePath);
+                            }
+                            string filePath = Path.Combine(savePath,lawyer.Name+ext);
+                            using (FileStream fs = new FileStream(filePath, FileMode.Create))
+                            {
+                                lawyer.Image.CopyTo(fs);
+                            }
+                            lawyer.ImagePath="~/Pictures/"+lawyer.Name+ext;
+                            _context.Add(lawyer);
+                            if (await _context.SaveChangesAsync() > 0)
+                            {
+                                return RedirectToAction(nameof(Index));
+                            }
+                            else
+                            {
+                                ModelState.AddModelError("", "Save failed");
+                            }
                         }
-                        else
+                        catch (Exception ex)
                         {
-                            ModelState.AddModelError("", "Save Failed");
+                            ModelState.AddModelError("", ex.Message);
                         }
 
 
                     }
                     else
                     {
-                        ModelState.AddModelError("", "Please Choose Image typer jpg||jpeg||png ");
-
-
+                        ModelState.AddModelError("", "Please enter .jpg |.png |.jpeg image");
                     }
 
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Please Choose a Image");
+                    ModelState.AddModelError("", "Please enter valid image");
+                    
                 }
-
-
-
-
-                //_context.Add(lawyer);
-                //await _context.SaveChangesAsync();
-                //return RedirectToAction(nameof(Index));
             }
-            
             return View(lawyer);
         }
 
@@ -134,7 +133,7 @@ namespace lawconncect.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Email,ContactNo,Images,Description")] Lawyer lawyer)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Email,ContactNo,Image,Description")] Lawyer lawyer)
         {
             if (id != lawyer.Id)
             {

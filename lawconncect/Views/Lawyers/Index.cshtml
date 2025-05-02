@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h1>Index</h1>
@@ -22,9 +23,8 @@
                 @Html.DisplayNameFor(model => model.ContactNo)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Images)
+                @Html.DisplayNameFor(model => model.ImagePath)
             </th>
-           
             <th>
                 @Html.DisplayNameFor(model => model.Description)
             </th>
@@ -32,21 +32,24 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ContactNo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Images)
-            </td>
-          
+        @foreach (var item in Model) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ContactNo)
+                </td>
+                <td>
+                    @if (item.ImagePath!=null)
+                    {
+						<img src="@Url.Content(item.ImagePath)" alt="Lawyer Image" style="width: 100px; height: 100px;" />
+					}
+					
+                </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Description)
             </td>

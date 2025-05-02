@@ -9,8 +9,8 @@ namespace lawconncect.Models
         public string Name { get; set; }
         public string Email { get; set; }
         public string ContactNo { get; set; }
-        [Column("ImagePath")]
-        public string Images { get; set; }
+     
+        public string ImagePath { get; set; }
         [NotMapped]
         public IFormFile Image { get; set; }
     
