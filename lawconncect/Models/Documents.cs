@@ -7,7 +7,7 @@ namespace lawconncect.Models
     {
         public int Id { get; set; }
         [ValidateNever]
-        public string DocPath { get; set; }
+        public string DocPath { get; set; } = "";
         [NotMapped]
         [ValidateNever]
         public IFormFile Document { get; set; }

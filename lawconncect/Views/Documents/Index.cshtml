@@ -20,17 +20,15 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-					@if (item.DocPath != null)
-					{
-						<a src="@Url.Content(item.DocPath)" >View Document</a>
-					}
-					else
-					{
-						<p>No Document</p>
-					})
+        @foreach (var item in Model) {
+            <tr>
+                <td>
+                    @if (item.DocPath != null)
+                    {
+                        <img src="@Url.Content(item.DocPath)" alt="Document Image" style="width: 100px; height: 100px;" />
+                    }
+                   
+
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

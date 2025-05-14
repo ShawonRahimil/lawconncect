@@ -46,7 +46,7 @@ namespace lawconncect.Controllers
         // GET: Sections/Create
         public IActionResult Create()
         {
-            return View();
+            return View( new Section());
         }
 
         // POST: Sections/Create

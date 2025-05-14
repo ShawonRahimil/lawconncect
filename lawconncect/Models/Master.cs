@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace lawconncect.Models
 {
@@ -12,9 +13,11 @@ namespace lawconncect.Models
         public int SectionId { get; set; }
         [ForeignKey("Adalot")]
         public int AdalotId { get; set; }
-      
+        [ValidateNever]
         public Section Section { get; set; }
+        [ValidateNever]
         public Adalot Adalot { get; set; }
+        [ValidateNever]
         public ICollection<Details> Details { get; set; }
     }
 }

@@ -46,7 +46,7 @@ namespace lawconncect.Controllers
         // GET: Adalots/Create
         public IActionResult Create()
         {
-            return View();
+            return View(new Adalot() );
         }
 
         // POST: Adalots/Create

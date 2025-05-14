@@ -47,11 +47,12 @@ namespace lawconncect.Controllers
         }
 
         // GET: Masters/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["AdalotId"] = new SelectList(_context.adalots, "Id", "Id");
-            ViewData["SectionId"] = new SelectList(_context.Sections, "Id", "Id");
-            return View();
+           
+            ViewBag.AdalotId= new SelectList(_context.adalots, "Id", "Name");
+            ViewBag.SectionId = new SelectList(_context.Sections, "Id", "Name");
+            return View( new Master());
         }
 
         // POST: Masters/Create
@@ -67,8 +68,15 @@ namespace lawconncect.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AdalotId"] = new SelectList(_context.adalots, "Id", "Id", master.AdalotId);
-            ViewData["SectionId"] = new SelectList(_context.Sections, "Id", "Id", master.SectionId);
+            else
+            {
+                var message = string.Join(" | ", ModelState.Values
+                                          .SelectMany(v => v.Errors)
+                                          .Select(e => e.ErrorMessage));
+                ModelState.AddModelError("", message);
+            }
+            ViewBag.AdalotId = new SelectList(_context.adalots,"Id", "Name", master.AdalotId);
+            ViewBag.SectionId = new SelectList(_context.Sections, "Id", "Name", master.SectionId);
             return View(master);
         }
 
@@ -85,8 +93,8 @@ namespace lawconncect.Controllers
             {
                 return NotFound();
             }
-            ViewData["AdalotId"] = new SelectList(_context.adalots, "Id", "Id", master.AdalotId);
-            ViewData["SectionId"] = new SelectList(_context.Sections, "Id", "Id", master.SectionId);
+            ViewData["AdalotId"] = new SelectList(_context.adalots, "Id", "Name", master.AdalotId);
+            ViewData["SectionId"] = new SelectList(_context.Sections, "Id", "Name", master.SectionId);
             return View(master);
         }
 
@@ -122,8 +130,8 @@ namespace lawconncect.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AdalotId"] = new SelectList(_context.adalots, "Id", "Id", master.AdalotId);
-            ViewData["SectionId"] = new SelectList(_context.Sections, "Id", "Id", master.SectionId);
+            ViewData["AdalotId"] = new SelectList(_context.adalots, "Id", "Name", master.AdalotId);
+            ViewData["SectionId"] = new SelectList(_context.Sections, "Id", "Name", master.SectionId);
             return View(master);
         }
 

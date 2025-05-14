@@ -1,6 +1,53 @@
-﻿@{
+﻿@using lawconncect.Data
+@{
     ViewData["Title"] = "Home Page";
 }
+@* nav var *@
+
+<h2 style="margin-bottom: 15px;">User Dashboard</h2>
+
+<!-- Navigation Bar -->
+<nav style="background-color: #333; padding: 10px;">
+    <a href="#" onclick="showSection('profile')" style="color: white; background-color: #444; margin-right: 10px; text-decoration: none; padding: 8px 12px; display: inline-block; border-radius: 4px;">Profile</a>
+    <a href="#" onclick="showSection('case')" style="color: white; background-color: #444; margin-right: 10px; text-decoration: none; padding: 8px 12px; display: inline-block; border-radius: 4px;">Case</a>
+    <a href="#" onclick="showSection('section')" style="color: white; background-color: #444; margin-right: 10px; text-decoration: none; padding: 8px 12px; display: inline-block; border-radius: 4px;">Section</a>
+    <a href="#" onclick="showSection('shareDocuments')" style="color: white; background-color: #444; margin-right: 10px; text-decoration: none; padding: 8px 12px; display: inline-block; border-radius: 4px;">Share Documents</a>
+    <a href="#" onclick="showSection('viewDetails')" style="color: white; background-color: #444; text-decoration: none; padding: 8px 12px; display: inline-block; border-radius: 4px;">View Details</a>
+</nav>
+
+<!-- Sections -->
+<section id="profile" style="margin-top: 30px; padding: 10px; border: 1px solid #ccc;">
+    <h3>Profile</h3>
+   <div> 
+       
+		 @await Component.InvokeAsync("Client"); 
+    </div> 
+</section>
+
+<section id="case" style="display: none; margin-top: 30px; padding: 10px; border: 1px solid #ccc;">
+    <h3>Case</h3>
+    <p>Case-related content goes here...</p>
+</section>
+
+<section id="section" style="display: none; margin-top: 30px; padding: 10px; border: 1px solid #ccc;">
+    <h3>Section</h3>
+    <p>Section-related content goes here...</p>
+</section>
+
+<section id="shareDocuments" style="display: none; margin-top: 30px; padding: 10px; border: 1px solid #ccc;">
+    <h3>Share Documents</h3>
+    <p>Document sharing interface goes here...</p>
+</section>
+
+<section id="viewDetails" style="display: none; margin-top: 30px; padding: 10px; border: 1px solid #ccc;">
+    <h3>View Details</h3>
+    <p>Details will be shown here...</p>
+</section>
+
+<!-- Inline Script to Toggle Sections -->
+
+
+@* navbar end *@
 
 <!-- Hero Section -->
 <section class="bg-primary text-white text-center py-5">
@@ -43,6 +90,7 @@
     </div>
 </section>
 
+
 <!-- Client Features -->
 <section id="client" class="bg-light py-5">
     <div class="container">
@@ -75,6 +123,13 @@
         <p>Email: support@lawconnect.com | Phone: +123 456 7890</p>
     </div>
 </section>
-
+<script>
+    function showSection(id) {
+      const sections = ['profile', 'case', 'section', 'shareDocuments', 'viewDetails'];
+      for (let i = 0; i < sections.length; i++) {
+        document.getElementById(sections[i]).style.display = (sections[i] === id) ? 'block' : 'none';
+      }
+    }
+</script>
 
 
